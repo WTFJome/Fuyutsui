@@ -138,7 +138,8 @@ function fu.updateOnUpdate()
     end
 end
 
-function fu.updateSpecInfo(specIndex)
+function fu.updateSpecInfo()
+    local specIndex = C_SpecializationInfo.GetSpecialization()
     print("载入圣骑士")
     fu.powerType = nil
     fu.blocks = nil
