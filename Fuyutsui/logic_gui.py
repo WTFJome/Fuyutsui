@@ -63,6 +63,10 @@ _toggle_key_str = "XBUTTON2"
 _toggle_vk = get_vk(_toggle_key_str)
 _binding_key_mode = False
 
+# 发送按键模式：switch=开关(持续) / click=单击(一次) / hold=按住(按住持续)
+_send_mode = "switch"
+_click_pending = False
+
 _state_lock = threading.Lock()
 _logic_enabled = False
 _state_dict = {}
@@ -141,7 +145,7 @@ def get_class_spec_view_data(class_id, spec_id):
 
 def _run_priest_loop():
     """后台运行的全职业主循环（根据职业/专精自动适配）"""
-    global _logic_enabled, _state_dict, _class_name, _class_id, _spec_name, _spec_id, _current_step, _unit_info
+    global _logic_enabled, _state_dict, _class_name, _class_id, _spec_name, _spec_id, _current_step, _unit_info, _send_mode, _click_pending
     prev_pressed = False
     prev_vk = _toggle_vk
     last_logic_time = 0.0
@@ -162,10 +166,40 @@ def _run_priest_loop():
             prev_vk = vk_now
 
         current_pressed = (ctypes.windll.user32.GetAsyncKeyState(vk_now) & 0x8000) != 0
-        if current_pressed and not prev_pressed:
+        rising = current_pressed and not prev_pressed
+        falling = (not current_pressed) and prev_pressed
+
+        # 根据“发送模式”决定何时启用逻辑与何时只发送一次
+        mode = _send_mode
+        if mode == "switch":
+            if rising:
+                with _state_lock:
+                    _logic_enabled = not _logic_enabled
+                    _click_pending = False
+                _current_step = "逻辑 " + ("开启" if _logic_enabled else "关闭")
+        elif mode == "click":
+            # 单击：按一次发送一次
+            if rising:
+                with _state_lock:
+                    _logic_enabled = True
+                    _click_pending = True
+                _current_step = "单击触发"
+            # 松开不改变状态，由 pending 的“一次”发送逻辑决定何时关闭
+        elif mode == "hold":
+            # 按住：持续发送，松开停止
             with _state_lock:
-                _logic_enabled = not _logic_enabled
-            _current_step = "逻辑 " + ("开启" if _logic_enabled else "关闭")
+                _logic_enabled = current_pressed
+                _click_pending = False
+            if falling:
+                _current_step = "按住结束"
+        else:
+            # 兜底：不支持的模式按开关逻辑处理
+            if rising:
+                with _state_lock:
+                    _logic_enabled = not _logic_enabled
+                    _click_pending = False
+                _current_step = "逻辑 " + ("开启" if _logic_enabled else "关闭")
+
         prev_pressed = current_pressed
 
         now = time.time()
@@ -210,8 +244,20 @@ def _run_priest_loop():
             with _state_lock:
                 _unit_info = unit_info_update
 
-        if action_hotkey:
-            send_key_to_wow(action_hotkey)
+        # 根据发送模式处理发送逻辑
+        if mode == "click":
+            with _state_lock:
+                pending = _click_pending
+            if pending:
+                # 只发送一次：无论是否命中 action_hotkey，都结束本次单击
+                if action_hotkey:
+                    send_key_to_wow(action_hotkey)
+                with _state_lock:
+                    _logic_enabled = False
+                    _click_pending = False
+        else:
+            if action_hotkey:
+                send_key_to_wow(action_hotkey)
         time.sleep(TOGGLE_INTERVAL)
 
 # CustomTkinter 配色：深灰主题，文字高对比度
@@ -241,12 +287,42 @@ CLASS_NAME_COLORS = {
     "唤魔师": "#33937F",
 }
 
+def _disable_ime_for_hwnd(hwnd: int):
+    """
+    尽量关闭指定窗口的 IME，避免窗口获取焦点后弹出输入法候选/输入窗口。
+    Windows IME 相关接口有兼容性差异，所以做了多种 best-effort。
+    """
+    try:
+        imm32 = ctypes.windll.imm32
+        hIMC = imm32.ImmGetContext(hwnd)
+        if hIMC:
+            # 0=关闭 IME 打开状态
+            imm32.ImmSetOpenStatus(hIMC, 0)
+            imm32.ImmReleaseContext(hwnd, hIMC)
+            return True
+    except Exception:
+        pass
+
+    # 兜底：不同系统/签名可能导致 ImmDisableIME 行为不一致
+    try:
+        ctypes.windll.imm32.ImmDisableIME(0)
+        return True
+    except Exception:
+        return False
+
 
 def create_gui():
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("dark-blue")
 
     root = ctk.CTk()
+    try:
+        hwnd = root.winfo_id()
+        _disable_ime_for_hwnd(hwnd)
+        # 再延迟一次，避免窗口刚创建/获得焦点后 IME 状态又被系统恢复
+        root.after(200, lambda: _disable_ime_for_hwnd(root.winfo_id()))
+    except Exception:
+        pass
     root.title("冬月")
     root.geometry("400x600")
     root.resizable(True, True)
@@ -271,15 +347,6 @@ def create_gui():
     class_name_label.pack(side="left", padx=(6, 0))
     spec_label = ctk.CTkLabel(inner_top, text="专精: -", font=("Microsoft YaHei", 14, "bold"), text_color=FG_LIGHT)
     spec_label.pack(side="left", padx=(12, 0))
-
-    toggle_var = ctk.BooleanVar(value=False)
-
-    def on_toggle():
-        with _state_lock:
-            global _logic_enabled
-            _logic_enabled = toggle_var.get()
-        status_label.configure(text=f"状态: {'开启' if _logic_enabled else '关闭'}",
-                              text_color=GREEN if _logic_enabled else RED)
 
     toggle_row = ctk.CTkFrame(top_frame, fg_color="transparent")
     toggle_row.pack(fill="x", padx=12, pady=(0, 10))
@@ -318,6 +385,11 @@ def create_gui():
         nonlocal binding_in_progress
         if not binding_in_progress:
             return
+        # 防止某些输入法在检测 KeyPress 前后重新打开
+        try:
+            _disable_ime_for_hwnd(root.winfo_id())
+        except Exception:
+            pass
 
         # Tk 的 event.char 在输入字符时更可靠；功能键通常 event.keysym 可用
         candidate = None
@@ -346,6 +418,10 @@ def create_gui():
         nonlocal binding_in_progress
         if not binding_in_progress:
             return
+        try:
+            _disable_ime_for_hwnd(root.winfo_id())
+        except Exception:
+            pass
 
         # Tk 通常把额外鼠标键映射为 ButtonPress-4 / ButtonPress-5
         num = getattr(event, "num", None)
@@ -380,6 +456,9 @@ def create_gui():
         # 让当前窗口获得焦点，尽量保证 KeyPress 能进来
         try:
             root.focus_force()
+            # focus 后立即再关一次 IME，避免候选/输入窗口被重新弹出
+            _disable_ime_for_hwnd(root.winfo_id())
+            root.after(100, lambda: _disable_ime_for_hwnd(root.winfo_id()))
         except Exception:
             pass
 
@@ -407,23 +486,75 @@ def create_gui():
     )
     bound_key_label.pack(side="left")
 
-    ctk.CTkCheckBox(
+    status_label = ctk.CTkLabel(
         toggle_row,
-        text="逻辑开启",
-        variable=toggle_var,
-        command=on_toggle,
+        text="状态: 关闭",
         font=("Microsoft YaHei", 12),
-        text_color=FG_LIGHT,
-        fg_color=BG_DARK,
-    ).pack(side="right")
+        text_color=RED,
+    )
+    status_label.pack(side="right")
 
-    def sync_toggle_from_logic():
+    # ---- 额外：发送模式（开关/单击/按住）----
+    mode_row = ctk.CTkFrame(top_frame, fg_color="transparent")
+    mode_row.pack(fill="x", padx=12, pady=(0, 10))
+
+    mode_label = ctk.CTkLabel(mode_row, text="发送模式:", font=("Microsoft YaHei", 12), text_color=FG_LIGHT)
+    mode_label.pack(side="left")
+
+    # 使用 GUI 按钮控制全局发送模式，并在切换时立即停止当前发送
+    def set_send_mode(mode: str):
+        global _send_mode, _logic_enabled, _click_pending
         with _state_lock:
-            v = _logic_enabled
-        if toggle_var.get() != v:
-            toggle_var.set(v)
-            status_label.configure(text=f"状态: {'开启' if v else '关闭'}",
-                                  text_color=GREEN if v else RED)
+            _send_mode = mode
+            _click_pending = False
+            _logic_enabled = False
+        update_mode_buttons()
+
+    def update_mode_buttons():
+        # 当前模式按钮绿色，其余白色
+        active = _send_mode
+        switch_btn.configure(text_color=GREEN if active == "switch" else FG_LIGHT)
+        click_btn.configure(text_color=GREEN if active == "click" else FG_LIGHT)
+        hold_btn.configure(text_color=GREEN if active == "hold" else FG_LIGHT)
+
+    switch_btn = ctk.CTkButton(
+        mode_row,
+        text="开关",
+        command=lambda: set_send_mode("switch"),
+        font=("Microsoft YaHei", 12),
+        width=80,
+        fg_color=BG_DARK,
+        text_color=GREEN if _send_mode == "switch" else FG_LIGHT,
+        hover_color="#3d3d3d",
+        corner_radius=8,
+    )
+    switch_btn.pack(side="left", padx=(12, 6))
+
+    click_btn = ctk.CTkButton(
+        mode_row,
+        text="单击",
+        command=lambda: set_send_mode("click"),
+        font=("Microsoft YaHei", 12),
+        width=80,
+        fg_color=BG_DARK,
+        text_color=GREEN if _send_mode == "click" else FG_LIGHT,
+        hover_color="#3d3d3d",
+        corner_radius=8,
+    )
+    click_btn.pack(side="left", padx=(6, 6))
+
+    hold_btn = ctk.CTkButton(
+        mode_row,
+        text="按住",
+        command=lambda: set_send_mode("hold"),
+        font=("Microsoft YaHei", 12),
+        width=80,
+        fg_color=BG_DARK,
+        text_color=GREEN if _send_mode == "hold" else FG_LIGHT,
+        hover_color="#3d3d3d",
+        corner_radius=8,
+    )
+    hold_btn.pack(side="left", padx=(6, 6))
 
     # ---- 3. 显示队伍（弹窗）----
     def open_team_window():
@@ -617,8 +748,6 @@ def create_gui():
     status_header = ctk.CTkFrame(status_frame, fg_color="transparent")
     status_header.pack(fill="x", padx=12, pady=(10, 2))
     ctk.CTkLabel(status_header, text="实时状态", font=("Microsoft YaHei", 13, "bold"), text_color=FG_LIGHT).pack(side="left")
-    status_label = ctk.CTkLabel(status_header, text="状态: 关闭", font=("Microsoft YaHei", 12), text_color=RED)
-    status_label.pack(side="right")
 
     status_grid = ctk.CTkFrame(status_frame, fg_color="transparent")
     status_grid.pack(fill="x", padx=12, pady=4)
@@ -673,10 +802,10 @@ def create_gui():
     last_status_keys = [None]
 
     def update_display():
-        sync_toggle_from_logic()
         with _state_lock:
             sd = dict(_state_dict)
             enabled = _logic_enabled
+            mode = _send_mode
             class_name = _class_name
             spec = _spec_name
             class_id = _class_id
@@ -695,8 +824,14 @@ def create_gui():
         if not content_frame.winfo_ismapped():
             content_frame.pack(fill="both", expand=True, pady=(0, 6))
 
-        status_label.configure(text=f"状态: {'开启' if enabled else '关闭'}",
-                              text_color=GREEN if enabled else RED)
+        # 发送模式显示：单击模式固定显示“状态: 单击”并高亮
+        if mode == "click":
+            status_label.configure(text="状态: 单击", text_color=GREEN)
+        else:
+            status_label.configure(
+                text=f"状态: {'开启' if enabled else '关闭'}",
+                text_color=GREEN if enabled else RED,
+            )
 
         current_status_keys, _, current_cooldown_spells = get_class_spec_view_data(class_id, spec_id)
         if last_status_keys[0] != current_status_keys:
