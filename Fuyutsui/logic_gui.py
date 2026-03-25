@@ -58,8 +58,10 @@ def _default_logic(state_dict, spec_name):
     return None, "无逻辑定义", {}
 
 
-toggle_key_str = "XBUTTON2"
-vk_toggle = get_vk(toggle_key_str)
+_toggle_lock = threading.Lock()
+_toggle_key_str = "XBUTTON2"
+_toggle_vk = get_vk(_toggle_key_str)
+_binding_key_mode = False
 
 _state_lock = threading.Lock()
 _logic_enabled = False
@@ -141,10 +143,25 @@ def _run_priest_loop():
     """后台运行的全职业主循环（根据职业/专精自动适配）"""
     global _logic_enabled, _state_dict, _class_name, _class_id, _spec_name, _spec_id, _current_step, _unit_info
     prev_pressed = False
+    prev_vk = _toggle_vk
     last_logic_time = 0.0
 
     while True:
-        current_pressed = (ctypes.windll.user32.GetAsyncKeyState(vk_toggle) & 0x8000) != 0
+        if _binding_key_mode:
+            time.sleep(TOGGLE_INTERVAL)
+            continue
+
+        vk_now = _toggle_vk
+        if vk_now is None:
+            time.sleep(TOGGLE_INTERVAL)
+            continue
+
+        # 如果用户在运行中修改了“开启逻辑”的按键，重置边沿状态，避免误触发
+        if vk_now != prev_vk:
+            prev_pressed = False
+            prev_vk = vk_now
+
+        current_pressed = (ctypes.windll.user32.GetAsyncKeyState(vk_now) & 0x8000) != 0
         if current_pressed and not prev_pressed:
             with _state_lock:
                 _logic_enabled = not _logic_enabled
@@ -206,6 +223,24 @@ RED = "#ff6b6b"
 FG_DIM = "#94a3b8"
 WINDOW_ALPHA = 1.0   # 1.0=文字不透明；若需背景半透明可调低（整窗同透明度）
 
+# 职业名称颜色（用于 GUI 顶部“职业”显示）
+CLASS_NAME_COLORS = {
+    "战士": "#C79C6E",
+    "圣骑士": "#F58CBA",
+    "猎人": "#ABD473",
+    "盗贼": "#FFF569",
+    "潜行者": "#FFF569",
+    "牧师": "#FFFFFF",
+    "萨满": "#0070DE",
+    "法师": "#69CCF0",
+    "术士": "#9482C9",
+    "武僧": "#00FF96",
+    "德鲁伊": "#FF7D0A",
+    "死亡骑士": "#C41F3B",
+    "恶魔猎手": "#A330C9",
+    "唤魔师": "#33937F",
+}
+
 
 def create_gui():
     ctk.set_appearance_mode("dark")
@@ -228,10 +263,12 @@ def create_gui():
     top_frame.pack(fill="x", pady=(0, 6))
 
     inner_top = ctk.CTkFrame(top_frame, fg_color="transparent")
-    inner_top.pack(fill="x", padx=12, pady=10)
+    inner_top.pack(fill="x", padx=12, pady=(10, 4))
 
-    class_label = ctk.CTkLabel(inner_top, text="职业: -", font=("Microsoft YaHei", 14, "bold"), text_color=FG_LIGHT)
-    class_label.pack(side="left", padx=(12, 0))
+    class_prefix_label = ctk.CTkLabel(inner_top, text="职业:", font=("Microsoft YaHei", 14, "bold"), text_color=FG_LIGHT)
+    class_prefix_label.pack(side="left", padx=(12, 0))
+    class_name_label = ctk.CTkLabel(inner_top, text="-", font=("Microsoft YaHei", 14, "bold"), text_color=FG_LIGHT)
+    class_name_label.pack(side="left", padx=(6, 0))
     spec_label = ctk.CTkLabel(inner_top, text="专精: -", font=("Microsoft YaHei", 14, "bold"), text_color=FG_LIGHT)
     spec_label.pack(side="left", padx=(12, 0))
 
@@ -244,8 +281,134 @@ def create_gui():
         status_label.configure(text=f"状态: {'开启' if _logic_enabled else '关闭'}",
                               text_color=GREEN if _logic_enabled else RED)
 
+    toggle_row = ctk.CTkFrame(top_frame, fg_color="transparent")
+    toggle_row.pack(fill="x", padx=12, pady=(0, 10))
+
+    binding_in_progress = False
+
+    def _display_key_str(key_str: str) -> str:
+        # 让空格等字符更友好显示
+        if key_str == " ":
+            return "SPACE"
+        return str(key_str)
+
+    def _stop_binding():
+        nonlocal binding_in_progress
+        binding_in_progress = False
+        global _binding_key_mode
+        _binding_key_mode = False
+        bind_btn.configure(state="normal")
+        try:
+            root.unbind("<KeyPress>")
+            root.unbind("<ButtonPress>")
+        except Exception:
+            pass
+
+    def _set_bound_key(key_str: str):
+        global _toggle_key_str, _toggle_vk
+        vk = get_vk(key_str)
+        if vk is None:
+            return False
+        with _toggle_lock:
+            _toggle_key_str = key_str
+            _toggle_vk = vk
+        return True
+
+    def on_key_press(event):
+        nonlocal binding_in_progress
+        if not binding_in_progress:
+            return
+
+        # Tk 的 event.char 在输入字符时更可靠；功能键通常 event.keysym 可用
+        candidate = None
+        ch = getattr(event, "char", "")
+        if ch and isinstance(ch, str) and len(ch) == 1:
+            candidate = ch.upper()
+        else:
+            keysym = getattr(event, "keysym", None) or ""
+            keysym = str(keysym)
+            if keysym.lower() == "space":
+                candidate = " "
+            else:
+                candidate = keysym.upper() if len(keysym) > 1 else keysym
+
+        if not candidate:
+            return
+
+        if not _set_bound_key(candidate):
+            bound_key_label.configure(text=f"已绑定:（不支持 {candidate}，请重试）")
+            return
+
+        bound_key_label.configure(text=f"已绑定: {_display_key_str(candidate)}")
+        _stop_binding()
+
+    def on_button_press(event):
+        nonlocal binding_in_progress
+        if not binding_in_progress:
+            return
+
+        # Tk 通常把额外鼠标键映射为 ButtonPress-4 / ButtonPress-5
+        num = getattr(event, "num", None)
+        candidate = None
+        if num == 4:
+            candidate = "XBUTTON1"
+        elif num == 5:
+            candidate = "XBUTTON2"
+
+        if not candidate:
+            bound_key_label.configure(text="已绑定:（不支持该鼠标键，请重试）")
+            return
+
+        if not _set_bound_key(candidate):
+            bound_key_label.configure(text=f"已绑定:（不支持 {candidate}，请重试）")
+            return
+
+        bound_key_label.configure(text=f"已绑定: {_display_key_str(candidate)}")
+        _stop_binding()
+
+    def start_binding_key():
+        nonlocal binding_in_progress
+        if binding_in_progress:
+            return
+
+        binding_in_progress = True
+        global _binding_key_mode
+        _binding_key_mode = True
+        bind_btn.configure(state="disabled")
+        bound_key_label.configure(text="已绑定:（请按下按键）")
+
+        # 让当前窗口获得焦点，尽量保证 KeyPress 能进来
+        try:
+            root.focus_force()
+        except Exception:
+            pass
+
+        root.bind("<KeyPress>", on_key_press)
+        root.bind("<ButtonPress>", on_button_press)
+
+    bind_btn = ctk.CTkButton(
+        toggle_row,
+        text="绑定按键",
+        command=start_binding_key,
+        font=("Microsoft YaHei", 12),
+        fg_color=BG_DARK,
+        text_color=FG_LIGHT,
+        hover_color="#3d3d3d",
+        corner_radius=8,
+        width=90,
+    )
+    bind_btn.pack(side="left", padx=(0, 8))
+
+    bound_key_label = ctk.CTkLabel(
+        toggle_row,
+        text=f"已绑定: {_display_key_str(_toggle_key_str)}",
+        font=("Microsoft YaHei", 12),
+        text_color=FG_DIM,
+    )
+    bound_key_label.pack(side="left")
+
     ctk.CTkCheckBox(
-        inner_top,
+        toggle_row,
         text="逻辑开启",
         variable=toggle_var,
         command=on_toggle,
@@ -404,12 +567,40 @@ def create_gui():
         refresh()
 
     # 顶部新增按钮：点击弹窗展示所有单位信息
+    normal_geometry = "400x600"
+    small_geometry = "400x110"
+    is_small = False
+
+    resize_btn = None
+
+    def toggle_window_size():
+        nonlocal is_small, resize_btn
+        is_small = not is_small
+        root.geometry(small_geometry if is_small else normal_geometry)
+        # 同步按钮图标：当前为缩小状态时显示“▲”表示可恢复
+        if resize_btn is not None:
+            resize_btn.configure(text=("▲" if is_small else "▼"))
+
+    resize_btn = ctk.CTkButton(
+        inner_top,
+        text="▼",
+        command=toggle_window_size,
+        font=("Microsoft YaHei", 12),
+        width=28,
+        fg_color=BG_DARK,
+        text_color=FG_LIGHT,
+        hover_color="#3d3d3d",
+        corner_radius=8,
+    )
+    resize_btn.pack(side="right", padx=(0, 8))
+
     ctk.CTkButton(
         inner_top,
         text="显示队伍",
         command=open_team_window,
         font=("Microsoft YaHei", 12),
-        fg_color=BG_FRAME,
+        width=100,
+        fg_color=BG_DARK,
         text_color=FG_LIGHT,
         hover_color="#3d3d3d",
         corner_radius=8,
@@ -491,7 +682,10 @@ def create_gui():
             class_id = _class_id
             spec_id = _spec_id
 
-        class_label.configure(text=f"职业: {class_name or '-'}")
+        class_name_label.configure(
+            text=class_name or "-",
+            text_color=CLASS_NAME_COLORS.get(class_name, FG_LIGHT),
+        )
         spec_label.configure(text=f"专精: {spec or '-'}")
         if spec is None:
             if content_frame.winfo_ismapped():
