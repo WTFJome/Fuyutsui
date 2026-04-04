@@ -17,7 +17,7 @@ Fuyutsui Tinkerer是由日本大众消费电子巨头 冬月电子（Fuyutsuki E
    | 萨满 | 元素 ❌ | 增强 ❌ | 恢复 ❌ |  |
    | 法师 | 奥术 ❌ | 火焰 ❌ | 冰霜 ✅ |  |
    | 术士 | 痛苦 ❌ | 恶魔 ✅ | 毁灭 ❌ |  |
-   | 武僧 | 酒仙 ❌ | 织雾 ❌ | 踏风 ❌ |  |
+   | 武僧 | 酒仙 ✅ | 织雾 ❌ | 踏风 ❌ |  |
    | 德鲁伊 | 平衡 ❌ | 野性 ❌ | 守护 ✅ | 恢复 ✅ |
    | 恶魔猎手 | 浩劫 ❌ | 复仇 ❌ | 噬灭 ❌ |  |
    | 唤魔师 | 湮灭 ❌ | 恩护 ❌ | 增辉 ❌ |  |
@@ -37,9 +37,7 @@ Fuyutsui Tinkerer是由日本大众消费电子巨头 冬月电子（Fuyutsuki E
 下面按“游戏内 Lua 插件 + 桌面端 Python”两部分说明。该项目面向 Windows（会调用屏幕截图与 Windows API）。
 
 ### 1. 文件放在哪里
-1. **Lua 插件（WoW AddOn）**：把仓库里的 `AddOns/Fuyutsui` 这个文件夹整体复制到魔兽世界安装目录的 `Interface/AddOns/` 下面。
-2. **桌面端（Python）**：保持仓库里的 `Fuyutsui/` 文件夹原样。
-
+**Lua 插件（WoW AddOn）**：把仓库里的 `AddOns/Fuyutsui` 这个文件夹整体复制到魔兽世界安装目录的 `Interface/AddOns/` 下面。
 
 ### 2. 安装 VS Code
 1. 安装 VS Code（任意版本即可）。
@@ -75,8 +73,6 @@ Fuyutsui Tinkerer是由日本大众消费电子巨头 冬月电子（Fuyutsuki E
 ### 6. 常见问题
 1. **扫描失败/找不到游戏窗口**：如果看到类似 “未找到游戏窗口或扫描失败”，说明 Python 没有匹配到游戏窗口标题。你需要在 `Fuyutsui/GetPixels.py` 的 `get_info(window_title="...")` 默认值，或在 `logic_gui.py` 里传入正确的标题字符串。
 2. **热键不生效**：检查 `Fuyutsui/config.yml` 里当前职业/专精对应的 `keymap` 字段是否指向 `Fuyutsui/keymap/` 下存在的文件；同时确认你的游戏动作条/宏与逻辑发送的热键一致。
-
-
 
 ## 免责声明
 
