@@ -37,7 +37,7 @@ local function createMacro(name, key, macro)
     if not btn then
         btn = CreateFrame("Button", name, UIParent, "SecureActionButtonTemplate")
         btn:SetAttribute("type", "macro")
-        btn:RegisterForClicks("AnyDown")
+        btn:RegisterForClicks("AnyUp", "AnyDown")
         macroList[name] = btn
         SetOverrideBindingClick(UIParent, false, key, name, "LeftButton")
     end
