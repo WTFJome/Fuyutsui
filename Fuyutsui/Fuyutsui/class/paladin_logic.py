@@ -135,6 +135,7 @@ def run_paladin_logic(state_dict, spec_name):
                     4: ("审判", "审判"),
                     5: ("正义盾击", "正义盾击"),
                     6: ("祝福之锤", "祝福之锤"),
+                    15: ("愤怒之锤", "审判"),
                 }
                 tup = action_map.get(assistant)
                 if tup and spells.get(tup[0], 0) <= 1:
