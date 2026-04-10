@@ -3,6 +3,11 @@
 
 from utils import *
 
+# 将需要驱散的首领 ID
+need_dispel_bosses = {4, 5}
+# 不需要驱散的首领 ID
+no_dispel_bosses = {64}
+
 def run_druid_logic(state_dict, spec_name):
     spells = state_dict.get("spells") or {}
     战斗 = state_dict.get("战斗")
@@ -29,15 +34,13 @@ def run_druid_logic(state_dict, spec_name):
         狂暴回复 = spells.get("狂暴回复")
         铁鬃 = state_dict.get("铁鬃")
         梦境层数 = state_dict.get("梦境层数")
-        姿态 = 姿态
-        目标距离 = 目标距离
+        姿态 = state_dict.get("姿态", 0)
+        目标距离 = state_dict.get("目标距离", 0)
         队伍人数 = state_dict.get("队伍人数")
 
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
-            return None, current_step, unit_info
-
-        if 战斗 and 目标有效:
+        elif 战斗 and 目标有效:
             if 姿态 != 5:
                 current_step = "施放 熊形态"
                 action_hotkey = get_hotkey(0, "熊形态")
@@ -104,11 +107,6 @@ def run_druid_logic(state_dict, spec_name):
         台风 = spells.get("台风", -1)
         夺魂咆哮 = spells.get("夺魂咆哮", -1)
         乌索克旋风 = spells.get("乌索克旋风", -1)
-
-        # 将需要驱散的首领 ID
-        need_dispel_bosses = {4, 5}
-        # 不需要驱散的首领 ID
-        no_dispel_bosses = {64}
 
         dispel_unit_magic, _ = get_unit_with_dispel_type(state_dict, 1)
         dispel_unit_curse, _ = get_unit_with_dispel_type(state_dict, 2)
