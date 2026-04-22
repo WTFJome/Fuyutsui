@@ -262,6 +262,27 @@ state:
       美德道标:
         step: 45
         type: "int"
+      牺牲祝福:
+        step: 46
+        type: "int"
+      保护祝福:
+        step: 47
+        type: "int"
+      自由祝福:
+        step: 48
+        type: "int"
+      制裁之锤:
+        step: 49
+        type: "int"
+      盲目之光:
+        step: 50
+        type: "int"
+      圣盾术:
+        step: 51
+        type: "int"
+      圣疗术:
+        step: 52
+        type: "int"  
     group:
       start: 70
       num: 6
@@ -304,6 +325,18 @@ state:
       type: "int"
     军备类型:
       step: 27
+      type: "int"
+    奉献:
+      step: 28
+      type: "int"
+    复仇之怒:
+      step: 29
+      type: "int"
+    圣光之锤:
+      step: 30
+      type: "int"
+    目标距离:
+      step: 31
       type: "int"
 
     spells:
@@ -355,6 +388,30 @@ state:
       祝福之锤:
         step: 46
         type: "int"
+      正义之锤:
+        step: 47
+        type: "int"
+      牺牲祝福:
+        step: 48
+        type: "int"
+      保护祝福:
+        step: 49
+        type: "int"
+      自由祝福:
+        step: 50
+        type: "int"
+      制裁之锤:
+        step: 51
+        type: "int"
+      盲目之光:
+        step: 52
+        type: "int"
+      圣盾术:
+        step: 53
+        type: "int"
+      圣疗术:
+        step: 54
+        type: "int"
 
   3:
     神圣能量:
@@ -363,12 +420,34 @@ state:
     神圣意志:
       step: 22
       type: "int"
-    爆发开关:
+    目标距离:
       step: 23
       type: "int"
-    AOE开关:
+    复仇之怒:
       step: 24
       type: "int"
+    处决宣判:
+      step: 25
+      type: "int"
+    敌人人数:
+      step: 26
+      type: "int"
+    圣光之锤:
+      step: 27
+      type: "int"
+    group:
+      start: 70
+      num: 3
+      生命值:
+        step: 1
+        type: "int"
+      职责:
+        step: 2
+        type: "int"
+      驱散:
+        step: 3
+        type: "int"
+
     spells:
       盲目之光:
         step: 31
@@ -412,7 +491,10 @@ state:
       灰烬觉醒:
         step: 44
         type: "int"
- 
+      复仇之怒:
+        step: 45
+        type: "int"
+
 3:
   keymap: "hunter.yml"
   1:
