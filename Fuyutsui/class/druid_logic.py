@@ -71,30 +71,35 @@ def _get_failed_spell(state_dict):
 
 def run_druid_logic(state_dict, spec_name):
     spells = state_dict.get("spells") or {}
-    战斗 = state_dict.get("战斗")
-    移动 = state_dict.get("移动")
-    施法 = state_dict.get("施法")
-    引导 = state_dict.get("引导")
-    生命值 = state_dict.get("生命值")
-    能量值 = state_dict.get("能量值")
-    一键辅助 = state_dict.get("一键辅助")
+
+    战斗 = state_dict.get("战斗", 0)
+    移动 = state_dict.get("移动", 0)
+    施法 = state_dict.get("施法", 0)
+    引导 = state_dict.get("引导", 0)
+    蓄力 = state_dict.get("蓄力", 0)
+    蓄力层数 = state_dict.get("蓄力层数", 0)
+    生命值 = state_dict.get("生命值", 0)
+    能量值 = state_dict.get("能量值", 0)
+    一键辅助 = state_dict.get("一键辅助", 0)
     法术失败 = state_dict.get("法术失败", 0)
     目标类型 = state_dict.get("目标类型", 0)
-    队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
-    队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
-    首领战 = int(state_dict.get("首领战", 0) or 0)
-    难度 = int(state_dict.get("难度", 0) or 0)
-    英雄天赋 = int(state_dict.get("英雄天赋", 0) or 0)
+    队伍类型 = state_dict.get("队伍类型", 0)
+    队伍人数 = state_dict.get("队伍人数", 0)
+    首领战 = state_dict.get("首领战", 0)
+    难度 = state_dict.get("难度", 0)
+    英雄天赋 = state_dict.get("英雄天赋", 0)
+
     失败法术 = _get_failed_spell(state_dict)
     tup = action_map.get(一键辅助)
-
     action_hotkey = None
     current_step = "无匹配技能"
     unit_info = {}
+
+    姿态 = state_dict.get("姿态", 0)
+
     if spec_name == "平衡":
         目标生命值 = state_dict.get("目标生命值", 0)
         敌人人数 = state_dict.get("敌人人数", 0)
-        姿态 = state_dict.get("姿态", 0)
         if 一键辅助 == 35:
             current_step = "施放 枭兽形态"
             action_hotkey = get_hotkey(0, "枭兽形态")
@@ -108,7 +113,6 @@ def run_druid_logic(state_dict, spec_name):
     elif spec_name == "野性":
         目标生命值 = state_dict.get("目标生命值", 0)
         敌人人数 = state_dict.get("敌人人数", 0)
-        姿态 = state_dict.get("姿态", 0)
         if 一键辅助 == 38:
             current_step = "施放 猎豹形态"
             action_hotkey = get_hotkey(0, "猎豹形态")
@@ -125,7 +129,6 @@ def run_druid_logic(state_dict, spec_name):
         狂暴回复 = spells.get("狂暴回复")
         铁鬃 = state_dict.get("铁鬃")
         梦境层数 = state_dict.get("梦境层数")
-        姿态 = state_dict.get("姿态", 0)
         目标距离 = state_dict.get("目标距离", 0)
         队伍人数 = state_dict.get("队伍人数")
 
@@ -167,7 +170,6 @@ def run_druid_logic(state_dict, spec_name):
         return None, current_step, unit_info
 
     elif spec_name == "奶德":
-        姿态 = state_dict.get("姿态", 0)
         目标距离 = state_dict.get("目标距离", 0)
         连击点 = state_dict.get("连击点", 0)
         施法技能 = state_dict.get("施法技能", 0)

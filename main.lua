@@ -349,6 +349,12 @@ local function updatePlayerEmpowerInfo()
     if state.empowering then
         local empowerStages = UnitEmpoweredStageDurations("player")
         local empowerDuration = UnitEmpoweredChannelDuration("player")
+        if empowerDuration then
+            local empowerDurationColor = empowerDuration:EvaluateRemainingDuration(curve10)
+            ---@diagnostic disable-next-line: param-type-mismatch
+            local _, _, b = empowerDurationColor:GetRGB()
+            creat(fixed["蓄力"], b)
+        end
         if empowerStages then
             for k, v in pairs(empowerStages) do
                 local empower = v:EvaluateRemainingDuration(curve10)
@@ -359,12 +365,6 @@ local function updatePlayerEmpowerInfo()
                     break
                 end
             end
-        end
-        if empowerDuration then
-            local empowerDurationColor = empowerDuration:EvaluateRemainingDuration(curve10)
-            ---@diagnostic disable-next-line: param-type-mismatch
-            local _, _, b = empowerDurationColor:GetRGB()
-            creat(fixed["蓄力"], b)
         end
     else
         creat(fixed["蓄力"], 0)

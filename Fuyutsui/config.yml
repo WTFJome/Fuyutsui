@@ -176,15 +176,67 @@ state:
 3: # 猎人
   keymap: "hunter.yml"
   1:
-
     spells:
-      倒刺射击: {step: 31, type: "int" }
-      杀戮命令: {step: 32, type: "int" }
-      眼镜蛇射击: {step: 33, type: "int" }
-      狂野怒火: {step: 34, type: "int" }
-      荒野呼唤: {step: 35, type: "int" }
-      夺命黑鸦: {step: 36, type: "int" }
-      弹幕射击: {step: 37, type: "int" }
+      牺牲咆哮: {step: 39, type: "int" }
+      意气风发: {step: 31, type: "int" }
+      胁迫: {step: 32, type: "int" }
+      震荡射击: {step: 33, type: "int" }
+      宁神射击: {step: 34, type: "int" }
+      焦油陷进: {step: 35, type: "int" }
+      恐吓野兽: {step: 36, type: "int" }
+      束缚射击: {step: 37, type: "int" }
+      摔绊: {step: 38, type: "int" }
+
+      杀戮命令: {step: 39, type: "int" }
+      杀戮充能: {step: 40, type: "int" }
+      倒刺射击: {step: 41, type: "int" }
+      倒刺充能: {step: 42, type: "int" }
+      反制射击: {step: 43, type: "int" }
+      狂野怒火: {step: 44, type: "int" }
+      狂野鞭笞: {step: 45, type: "int" }
+  2:
+    spells:
+      牺牲咆哮: {step: 39, type: "int" }
+      意气风发: {step: 31, type: "int" }
+      胁迫: {step: 32, type: "int" }
+      震荡射击: {step: 33, type: "int" }
+      宁神射击: {step: 34, type: "int" }
+      焦油陷进: {step: 35, type: "int" }
+      恐吓野兽: {step: 36, type: "int" }
+      束缚射击: {step: 37, type: "int" }
+      摔绊: {step: 38, type: "int" }
+
+      反制射击: {step: 39, type: "int" }
+      瞄准射击: {step: 40, type: "int" }
+      瞄准充能: {step: 41, type: "int" }
+      急速射击: {step: 42, type: "int" }
+      百发百中: {step: 43, type: "int" }
+  3:
+    spells:
+      牺牲咆哮: {step: 39, type: "int" }
+      意气风发: {step: 31, type: "int" }
+      胁迫: {step: 32, type: "int" }
+      震荡射击: {step: 33, type: "int" }
+      宁神射击: {step: 34, type: "int" }
+      焦油陷进: {step: 35, type: "int" }
+      恐吓野兽: {step: 36, type: "int" }
+      束缚射击: {step: 37, type: "int" }
+      摔绊: {step: 38, type: "int" }
+
+      爆裂火铳: {step: 39, type: "int" }
+      狩魂一击: {step: 40, type: "int" }
+      鱼叉猛刺: {step: 41, type: "int" }
+      猛禽一击: {step: 42, type: "int" }
+      野火炸弹: {step: 43, type: "int" }
+
+4: # 盗贼
+  keymap: "rogue.yml"
+  1:
+    目标生命值: {step: 21, type: "int" }
+    敌人人数: {step: 22, type: "int" }
+    spells:
+      刺骨: {step: 31, type: "int" }
+
 
 5: # 牧师
   keymap: "priest.yml"
@@ -730,3 +782,29 @@ state:
       虚空射线: {step: 55, type: "int" }
       恶魔追击: {step: 56, type: "int" }
       饥渴斩击: {step: 57, type: "int" }
+
+13: # 唤魔师
+  keymap: "evoker.yml"
+  1:
+    施法技能: {step: 21, type: "int" }
+
+    spells:
+      净除: {step: 31, type: "int" }
+      黑曜鳞片: {step: 32, type: "int" }
+      黑曜充能: {step: 33, type: "int" }
+      山崩: {step: 34, type: "int" }
+      青翠之拥: {step: 35, type: "int" }
+      深呼吸: {step: 36, type: "int" }
+      微风: {step: 37, type: "int" }
+      悬空: {step: 38, type: "int" }
+      悬空充能: {step: 39, type: "int"}
+      扫尾: {step: 40, type: "int"}
+      扭转天平: {step: 41, type: "int"}
+      营救: {step: 42, type: "int"}
+      时间螺旋: {step: 43, type: "int"}
+      空间悖论: {step: 44, type: "int"}
+
+      永恒之涌: {step: 45, type: "int"}
+      镇压: {step: 46, type: "int"}
+      狂龙之怒: {step: 47, type: "int"}
+      火焰吐息: {step: 48, type: "int"}

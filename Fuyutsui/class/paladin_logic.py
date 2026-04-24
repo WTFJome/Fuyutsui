@@ -103,30 +103,29 @@ def _resolve_ret_3hp_action(公正之剑, 审判, 一键辅助, helper_finisher=
 def run_paladin_logic(state_dict, spec_name):
     spells = state_dict.get("spells") or {}
 
-    战斗 = state_dict.get("战斗", False)
-    移动 = state_dict.get("移动", False)
-    有效性 = state_dict.get("有效性", False)
+    战斗 = state_dict.get("战斗", 0)
+    移动 = state_dict.get("移动", 0)
     施法 = state_dict.get("施法", 0)
     引导 = state_dict.get("引导", 0)
+    蓄力 = state_dict.get("蓄力", 0)
+    蓄力层数 = state_dict.get("蓄力层数", 0)
     生命值 = state_dict.get("生命值", 0)
     能量值 = state_dict.get("能量值", 0)
     一键辅助 = state_dict.get("一键辅助", 0)
     法术失败 = state_dict.get("法术失败", 0)
-    目标类型 = int(state_dict.get("目标类型", 0) or 0)
-    队伍类型 = int(state_dict.get("队伍类型", 0) or 0)
-    队伍人数 = int(state_dict.get("队伍人数", 0) or 0)
-    首领战 = int(state_dict.get("首领战", 0) or 0)
-    难度 = int(state_dict.get("难度", 0) or 0)
-    英雄天赋 = int(state_dict.get("英雄天赋", 0) or 0)
-    
-    神圣能量 = int(state_dict.get("神圣能量", 0) or 0)
+    目标类型 = state_dict.get("目标类型", 0)
+    队伍类型 = state_dict.get("队伍类型", 0)
+    队伍人数 = state_dict.get("队伍人数", 0)
+    首领战 = state_dict.get("首领战", 0)
+    难度 = state_dict.get("难度", 0)
+    英雄天赋 = state_dict.get("英雄天赋", 0)
+
     失败法术 = _get_failed_spell(state_dict)
     tup = action_map.get(一键辅助)
-
     action_hotkey = None
     current_step = "无匹配技能"
     unit_info = {}
-
+    
     if spec_name == "神圣":
         目标距离 = int(state_dict.get("目标距离", 0) or 0)
         施法技能 = int(state_dict.get("施法技能", 0) or 0)
