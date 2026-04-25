@@ -56,40 +56,53 @@ function fu.updateSpecInfo()
             ["符文"] = 21,
             ["目标生命值"] = 22,
             ["敌人人数"] = 23,
+            ["爆发开关"] = 24,
+            ["输出模式"] = 25,
+            ["AOE开关"] = 26,
             auras = {
                 ["次级食尸鬼"] = {
-                    index = 25,
+                    index = 27,
                     auraRef = fu.auras["次级食尸鬼"],
                     showKey = "remaining",
                 },
-                ["食尸鬼层数"] = {
-                    index = 26,
-                    auraRef = fu.auras["次级食尸鬼"],
-                    showKey = "count",
+                ["割魂索命"] = {
+                    index = 28,
+                    auraRef = fu.auras["割魂索命"],
+                    showKey = "remaining",
                 },
                 ["末日突降"] = {
-                    index = 27,
+                    index = 29,
                     auraRef = fu.auras["末日突降"],
                     showKey = "remaining",
                 },
                 ["末日突降层数"] = {
-                    index = 28,
+                    index = 30,
                     auraRef = fu.auras["末日突降"],
                     showKey = "count",
                 },
                 ["黑暗援助"] = {
-                    index = 29,
+                    index = 31,
                     auraRef = fu.auras["黑暗援助"],
                     showKey = "remaining",
                 },
                 ["禁断知识"] = {
-                    index = 30,
+                    index = 32,
                     auraRef = fu.auras["禁断知识"],
                     showKey = "remaining",
                 },
                 ["脓疮毒镰"] = {
-                    index = 31,
+                    index = 33,
                     auraRef = fu.auras["脓疮毒镰"],
+                    showKey = "remaining",
+                },
+                ["脓疮毒镰2"] = {
+                    index = 34,
+                    auraRef = fu.auras["脓疮毒镰2"],
+                    showKey = "remaining",
+                },
+                ["枯萎凋零"] = {
+                    index = 35,
+                    auraRef = fu.auras["枯萎凋零"],
                     showKey = "remaining",
                 },
             }
@@ -99,6 +112,7 @@ function fu.updateSpecInfo()
         fu.spellCooldown[1247378] = { index = 46, name = "腐化", charge = 47 }
         fu.spellCooldown[1233448] = { index = 48, name = "黑暗突变" }
         fu.spellCooldown[343294] = { index = 49, name = "灵魂收割" }
+        fu.spellCooldown[43265] = { index = 50, name = "枯萎凋零", charge = 51 }
     end
 end
 
@@ -107,7 +121,7 @@ function fu.CreateClassMacro()
     local specialSpells = { [38] = "/castsequence reset=3 死亡之握,0", }
     local staticSpells = {
         [1] = "亡者复生",
-        [2] = "亡者大军",
+        [2] = "亡者大军\n",
         [3] = "凋零缠绕",
         [4] = "天灾打击",
         [5] = "扩散",

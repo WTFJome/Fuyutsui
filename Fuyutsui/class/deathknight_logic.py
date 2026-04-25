@@ -95,28 +95,40 @@ def run_deathknight_logic(state_dict, spec_name):
     elif spec_name == "鲜血":
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
-        elif 战斗 and 1 <= 目标类型 <= 3 and tup:
-            current_step = f"施放 {tup[0]}"
-            action_hotkey = get_hotkey(0, tup[1])
+        elif 战斗 and 1 <= 目标类型 <= 3:
+            if tup:
+                current_step = f"施放 {tup[0]}"
+                action_hotkey = get_hotkey(0, tup[1])
+            else:
+                current_step = "战斗中 - 无匹配技能"
         else:
             current_step = "无匹配技能"
     elif spec_name == "冰霜":
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
-        elif 战斗 and 1 <= 目标类型 <= 3 and tup:
-            current_step = f"施放 {tup[0]}"
-            action_hotkey = get_hotkey(0, tup[1])
+        elif 战斗 and 1 <= 目标类型 <= 3:
+            if tup:
+                current_step = f"施放 {tup[0]}"
+                action_hotkey = get_hotkey(0, tup[1])
+            else:
+                current_step = "战斗中 - 无匹配技能"
         else:
             current_step = "无匹配技能"
     elif spec_name == "邪恶":
-        目标生命值 = state_dict.get("目标生命值", 0)
+        爆发 = state_dict.get("爆发开关", 0)
+        输出模式 = state_dict.get("输出模式", 0)
+        AOE = state_dict.get("AOE开关", 0)
+
         次级食尸鬼 = state_dict.get("次级食尸鬼", 0)
         食尸鬼层数 = state_dict.get("食尸鬼层数", 0)
+        割魂索命 = state_dict.get("割魂索命", 0)
         末日突降 = state_dict.get("末日突降", 0)
-        末日突降层数 = state_dict.get("末日突降层数", 0)
+        末日层数 = state_dict.get("末日突降层数", 0)
         黑暗援助 = state_dict.get("黑暗援助", 0)
         禁断知识 = state_dict.get("禁断知识", 0)
         脓疮毒镰 = state_dict.get("脓疮毒镰", 0)
+        脓疮毒镰2 = state_dict.get("脓疮毒镰2", 0)
+        枯萎凋零 = state_dict.get("枯萎凋零", 0)
 
         亡者复生 = spells.get("亡者复生", -1)
         亡者大军 = spells.get("亡者大军", -1)
@@ -124,7 +136,8 @@ def run_deathknight_logic(state_dict, spec_name):
         腐化充能 = spells.get("腐化充能", -1)
         黑暗突变 = spells.get("黑暗突变", -1)
         灵魂收割 = spells.get("灵魂收割", -1)
-        tup = action_map.get(一键辅助)
+        凋零冷却 = spells.get("凋零冷却", -1)
+        凋零充能 = spells.get("凋零充能", -1)
 
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
@@ -132,55 +145,76 @@ def run_deathknight_logic(state_dict, spec_name):
             current_step = "施放 亡者复生"
             action_hotkey = get_hotkey(0, "亡者复生")
         elif 战斗 and 1 <= 目标类型 <= 3:
-            if 亡者大军 > 0 and tup:
-                current_step = f"施放 {tup[0]}"
-                action_hotkey = get_hotkey(0, tup[1])
-            elif 黑暗援助 > 0 and 生命值 <= 80:
+            if 黑暗援助 > 0 and 生命值 <= 80:
                 current_step = "施放 灵界打击"
                 action_hotkey = get_hotkey(0, "灵界打击")
             elif 生命值 <= 30 and 能量值 >= 40:
                 current_step = "施放 灵界打击"
                 action_hotkey = get_hotkey(0, "灵界打击")
-            elif 一键辅助 == 6:
-                current_step = "施放 爆发"
-                action_hotkey = get_hotkey(0, "爆发")
-            elif 黑暗突变 == 0:
-                current_step = "施放 黑暗突变"
-                action_hotkey = get_hotkey(0, "黑暗突变")
-            elif 腐化 == 0 and 腐化充能 < 2 and (灵魂收割 == 255 or 目标生命值 > 35):
-                current_step = "施放 腐化"
-                action_hotkey = get_hotkey(0, "腐化")
-            elif 灵魂收割 == 0 and 目标生命值 < 35 :
-                current_step = "施放 灵魂收割"
-                action_hotkey = get_hotkey(0, "灵魂收割")
-            elif 腐化 == 0 and 黑暗突变 > 15 and (灵魂收割 == 255 or 目标生命值 > 35):
-                current_step = "施放 腐化充能"
-                action_hotkey = get_hotkey(0, "腐化")
-            elif 脓疮毒镰 > 0 and 食尸鬼层数 <= 5:
-                current_step = "施放 脓疮毒镰"
-                action_hotkey = get_hotkey(0, "脓疮打击")
-            elif ((末日突降 == 1 and 能量值 >= 15) or 能量值 >= 80) and 敌人人数 >= 3:
-                current_step = "施放 扩散"
-                action_hotkey = get_hotkey(0, "扩散")
-            elif ((末日突降 == 1 and 能量值 >= 15) or 能量值 >= 80) and 敌人人数 < 3:
-                current_step = "施放 凋零缠绕"
-                action_hotkey = get_hotkey(0, "凋零缠绕")
-            elif 禁断知识 > 0 and 能量值 >= 30 and 敌人人数 < 3:
-                current_step = "施放 凋零缠绕"
-                action_hotkey = get_hotkey(0, "凋零缠绕")
-            elif 禁断知识 > 0 and 能量值 >= 30 and 敌人人数 >= 3:
-                current_step = "施放 扩散"
-                action_hotkey = get_hotkey(0, "扩散")
-            elif 食尸鬼层数 <= 1 and 符文 >= 2:
-                current_step = "施放 脓疮打击"
-                action_hotkey = get_hotkey(0, "脓疮打击")
-            elif 食尸鬼层数 > 0 and 符文 > 0:
-                current_step = "施放 天灾打击"
-                action_hotkey = get_hotkey(0, "天灾打击")
-            elif 能量值 >= 30:
-                current_step = "施放 凋零缠绕"
-                action_hotkey = get_hotkey(0, "凋零缠绕")
-            else:
-                current_step = "战斗中-无匹配技能"
+                # 一键辅助
+            if 输出模式 == 0:
+                current_step = f"施放 {tup[0]}"
+                action_hotkey = get_hotkey(0, tup[1])
+                # 手写逻辑
+            elif 输出模式 == 1:
+                
+                if 一键辅助 == 6:
+                    current_step = "施放 爆发"
+                    action_hotkey = get_hotkey(0, "爆发")
+                    # 只有"黑暗突变"和"亡者大军"2个技能CD都好了才施放"亡者大军"
+                elif 爆发 == 1 and 黑暗突变 == 0 and 亡者大军 == 0:
+                    current_step = "施放 亡者大军"
+                    action_hotkey = get_hotkey(0, "亡者大军")
+                    # 确保"黑暗突变"会等待"亡者大军"CD
+                elif 爆发 == 1 and 黑暗突变 == 0 and 亡者大军 > 40:
+                    current_step = "施放 黑暗突变"
+                    action_hotkey = get_hotkey(0, "黑暗突变")
+                    # 优先灵魂收割
+                elif 灵魂收割 == 0 and (目标生命值 < 35 or 割魂索命 > 0):
+                    current_step = "施放 灵魂收割"
+                    action_hotkey = get_hotkey(0, "灵魂收割")
+                    # 只有在施放黑暗突变时, 施放腐化
+                elif 腐化 == 0 and 目标生命值 > 35 and 黑暗突变 > 30 and 食尸鬼层数 < 8:
+                    current_step = "施放 腐化"
+                    action_hotkey = get_hotkey(0, "腐化")
+                    # 保持脓疮毒镰buff
+                elif 脓疮毒镰 > 0 and (脓疮毒镰2 == 0 or 脓疮毒镰 < 3):
+                    current_step = "施放 脓疮毒镰"
+                    action_hotkey = get_hotkey(0, "脓疮打击")
+                    # AOE 时, 施放"枯萎凋零"
+                elif 敌人人数 >= 3 and 凋零冷却 == 0 and (枯萎凋零 == 0 or 凋零充能 <= 15):
+                    current_step = "施放 枯萎凋零"
+                    action_hotkey = get_hotkey(0, "枯萎凋零")
+                    # "末日突降" 或 "能量大于80" , 根据敌人数量消耗符能
+                elif ((末日突降 == 1 and 能量值 >= 15) or 能量值 >= 80) and 敌人人数 >= 3:
+                    current_step = "施放 扩散"
+                    action_hotkey = get_hotkey(0, "扩散")
+                elif ((末日突降 == 1 and 能量值 >= 15) or 能量值 >= 80) and 敌人人数 < 3:
+                    current_step = "施放 凋零缠绕"
+                    action_hotkey = get_hotkey(0, "凋零缠绕")
+                    # "禁断知识" 优先消耗符能
+                elif 禁断知识 > 0 and 能量值 >= 30 and 敌人人数 < 3:
+                    current_step = "施放 凋零缠绕"
+                    action_hotkey = get_hotkey(0, "凋零缠绕")
+                elif 禁断知识 > 0 and 能量值 >= 30 and 敌人人数 >= 3:
+                    current_step = "施放 扩散"
+                    action_hotkey = get_hotkey(0, "扩散")
+                    # 没有"食尸鬼层数" 或 没有"脓疮毒镰buff", 使用"脓疮打击"
+                elif (食尸鬼层数 == 0 or 脓疮毒镰2 == 0) and 符文 >= 2:
+                    current_step = "施放 脓疮打击"
+                    action_hotkey = get_hotkey(0, "脓疮打击")
+                    # 消耗 "食尸鬼层数"
+                elif 食尸鬼层数 > 0 and 符文 > 0:
+                    current_step = "施放 天灾打击"
+                    action_hotkey = get_hotkey(0, "天灾打击")
+                    # 消耗 符能
+                elif 能量值 >= 30 and 敌人人数 >= 3:
+                    current_step = "施放 扩散"
+                    action_hotkey = get_hotkey(0, "扩散")
+                elif 能量值 >= 30 and 敌人人数 < 3:
+                    current_step = "施放 凋零缠绕"
+                    action_hotkey = get_hotkey(0, "凋零缠绕")
+                else:
+                    current_step = "战斗中-无匹配技能"
 
     return action_hotkey, current_step, unit_info
