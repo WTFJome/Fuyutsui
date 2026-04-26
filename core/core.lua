@@ -13,51 +13,51 @@ local _, fu = ...
 -- /fu dpsmode  — DPS 模式 开 / 关 切换
 -- /fu dpsmode manual     — 输出模式 切换到 手动编写逻辑
 -- /fu dpsmode assistant  — 输出模式 切换到 官方一键辅助
-
-local aoeMode = 0
-local cooldowns = 0
-local dpsMode = 0
+FuyutsuiDB = {
+    aoeMode = 0,
+    cooldowns = 0,
+    dpsMode = 0,
+}
 
 local function SaveConfig()
     -- 确保全局变量已初始化
-    FuyutsuiDB = FuyutsuiDB or {}
-    FuyutsuiDB.aoeMode = aoeMode
-    FuyutsuiDB.cooldowns = cooldowns
-    FuyutsuiDB.dpsMode = dpsMode
+    FuyutsuiDB.aoeMode = FuyutsuiDB.aoeMode or 0
+    FuyutsuiDB.cooldowns = FuyutsuiDB.cooldowns or 0
+    FuyutsuiDB.dpsMode = FuyutsuiDB.dpsMode or 0
 end
 
 local function switchCooldown()
-    if cooldowns == 0 then
+    if FuyutsuiDB.cooldowns == 0 then
         print("|cff00ff00[Fuyutsui]|r 爆发已|cffff0000关闭|r") -- 修改"关闭"为红色
     else
         print("|cff00ff00[Fuyutsui]|r 爆发已|cff00ff00开启|r")
     end
     if fu.blocks and fu.blocks["爆发开关"] then
-        fu.updateOrCreatTextureByIndex(fu.blocks["爆发开关"], cooldowns / 255)
+        fu.updateOrCreatTextureByIndex(fu.blocks["爆发开关"], FuyutsuiDB.cooldowns / 255)
     end
     SaveConfig() -- 保存
 end
 
 local function switchAoeMode()
-    if aoeMode == 0 then
+    if FuyutsuiDB.aoeMode == 0 then
         print("|cff00ff00[Fuyutsui]|r 已切换|cff00ff00自动|r模式！")
-    elseif aoeMode == 1 then
+    elseif FuyutsuiDB.aoeMode == 1 then
         print("|cff00ff00[Fuyutsui]|r 已切换|cff00ff00单体|r模式！")
     end
     if fu.blocks and fu.blocks["AOE开关"] then
-        fu.updateOrCreatTextureByIndex(fu.blocks["AOE开关"], aoeMode / 255)
+        fu.updateOrCreatTextureByIndex(fu.blocks["AOE开关"], FuyutsuiDB.aoeMode / 255)
     end
     SaveConfig() -- 保存
 end
 
 local function switchDpsMode()
-    if dpsMode == 0 then
+    if FuyutsuiDB.dpsMode == 0 then
         print("|cff00ff00[Fuyutsui]|r 输出模式已修改为|cff00ff00官方一键辅助|r") -- 修改"关闭"为红色
     else
         print("|cff00ff00[Fuyutsui]|r 输出模式已修改为|cff00ff00手动编写逻辑|r")
     end
     if fu.blocks and fu.blocks["输出模式"] then
-        fu.updateOrCreatTextureByIndex(fu.blocks["输出模式"], dpsMode / 255)
+        fu.updateOrCreatTextureByIndex(fu.blocks["输出模式"], FuyutsuiDB.dpsMode / 255)
     end
     SaveConfig() -- 保存
 end
@@ -68,33 +68,33 @@ local function Fuyutsui_SlashHandler(msg)
     local command = string.lower(msg:trim())
     -- 爆发
     if command == "cd" then
-        cooldowns = (cooldowns == 0) and 1 or 0
+        FuyutsuiDB.cooldowns = (FuyutsuiDB.cooldowns == 0) and 1 or 0
         switchCooldown()
     elseif command == "cd on" then
-        cooldowns = 1
+        FuyutsuiDB.cooldowns = 1
         switchCooldown()
     elseif command == "cd off" then
-        cooldowns = 0
+        FuyutsuiDB.cooldowns = 0
         switchCooldown()
         -- AOE模式
     elseif command == "aoemode" then
-        aoeMode = (aoeMode == 0) and 1 or 0
+        FuyutsuiDB.aoeMode = (FuyutsuiDB.aoeMode == 0) and 1 or 0
         switchAoeMode()
     elseif command == "aoemode auto" then
-        aoeMode = 0
+        FuyutsuiDB.aoeMode = 0
         switchAoeMode()
     elseif command == "aoemode aoe" then
-        aoeMode = 1
+        FuyutsuiDB.aoeMode = 1
         switchAoeMode()
         -- 输出模式
     elseif command == "dpsmode" then
-        dpsMode = (dpsMode == 0) and 1 or 0
+        FuyutsuiDB.dpsMode = (FuyutsuiDB.dpsMode == 0) and 1 or 0
         switchDpsMode()
     elseif command == "dpsmode manual" then
-        dpsMode = 1
+        FuyutsuiDB.dpsMode = 1
         switchDpsMode()
     elseif command == "dpsmode assistant" then
-        dpsMode = 0
+        FuyutsuiDB.dpsMode = 0
         switchDpsMode()
     else
         -- 默认显示的帮助信息
@@ -188,9 +188,9 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end
 
         -- 将保存的数据读回本地变量
-        aoeMode = FuyutsuiDB.aoeMode or 0
-        cooldowns = FuyutsuiDB.cooldowns or 0
-        dpsMode = FuyutsuiDB.dpsMode or 0
+        FuyutsuiDB.aoeMode = FuyutsuiDB.aoeMode
+        FuyutsuiDB.cooldowns = FuyutsuiDB.cooldowns
+        FuyutsuiDB.dpsMode = FuyutsuiDB.dpsMode
 
         -- 根据读取到的数据初始化界面/状态
         -- 调用一次以同步你代码中的 fu.blocks 逻辑

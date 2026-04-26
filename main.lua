@@ -431,7 +431,23 @@ local function updatePlayerPower(powerType)
         creat(blocks["灵魂碎片"], power / 255)
     end
 end
-
+-- 更新玩家配置
+local function updatePlayerConfig()
+    C_Timer.After(3, function()
+        if blocks then
+            print("重新描绘配置像素")
+            if fu.blocks["爆发开关"] then
+                creat(fu.blocks["爆发开关"], FuyutsuiDB.cooldowns / 255)
+            end
+            if fu.blocks["AOE开关"] then
+                creat(fu.blocks["AOE开关"], FuyutsuiDB.aoeMode / 255)
+            end
+            if fu.blocks["输出模式"] then
+                creat(fu.blocks["输出模式"], FuyutsuiDB.dpsMode / 255)
+            end
+        end
+    end)
+end
 -- 更新玩家酒池百分比
 local function updatePlayerStagger()
     if blocks and blocks["酒池"] then
@@ -645,7 +661,10 @@ local function updateRune()
     if blocks and blocks["符文"] then
         local total = 0
         for i = 1, 6 do
-            total = total + GetRuneCount(i)
+            local runeCount = GetRuneCount(i)
+            if runeCount then
+                total = total + runeCount
+            end
         end
         creat(blocks["符文"], total / 255)
     end
@@ -1281,6 +1300,7 @@ function frame:PLAYER_ENTERING_WORLD()
     end)
     updatePlayerState()
     updateSpellKnown()
+    updatePlayerConfig()
 end
 
 frame:RegisterEvent("ZONE_CHANGED")
@@ -1432,7 +1452,7 @@ function frame:UNIT_SPELLCAST_SUCCEEDED(unitTarget, castGUID, spellID, castBarID
             fu.ClearAllFuyutsuiBars()
             print("切换天赋")
             C_Timer.After(1, function()
-                updatePlayerSpecInfo()
+                updateAllFunction()
             end)
         elseif spellID == 200749 then
             fu.ClearAllFuyutsuiBars()
