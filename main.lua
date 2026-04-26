@@ -878,12 +878,13 @@ end
 -- 更新范围内敌方姓名版数量
 local function updateEnemyCount()
     local count = 0
+    local inTestMap = state.mapID and state.mapID == 2393
     for unit, data in pairs(nameplate) do
         local minRange, maxRange = updateUnitRange(unit)
         data.minRange = minRange
         data.maxRange = maxRange
         data.affectingCombat = UnitAffectingCombat(unit)
-        if data.canAttack and data.maxRange and data.maxRange <= specRange and data.affectingCombat then
+        if data.canAttack and data.maxRange and data.maxRange <= specRange and (data.affectingCombat or inTestMap) then
             count = count + 1
         end
     end
@@ -1225,9 +1226,7 @@ end
 local frame = CreateFrame("Frame")
 frame:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 
-
-frame:RegisterEvent("PLAYER_LOGIN")
-function frame:PLAYER_LOGIN()
+local function updateAllFunction()
     getPlayerInfo()
     updatePlayerState()
     updatePlayerCombat()
@@ -1240,8 +1239,14 @@ function frame:PLAYER_LOGIN()
     fu.readKeybindings()
 end
 
+frame:RegisterEvent("PLAYER_LOGIN")
+function frame:PLAYER_LOGIN()
+    updateAllFunction()
+end
+
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 function frame:PLAYER_ENTERING_WORLD()
+    state.mapID = C_Map.GetBestMapForUnit("player") or 0
     fu.ClearAllFuyutsuiBars()
     C_Timer.After(1, function()
         updatePlayerSpecInfo()
@@ -1253,8 +1258,8 @@ end
 
 frame:RegisterEvent("ZONE_CHANGED")
 function frame:ZONE_CHANGED()
-    local mapID = C_Map.GetBestMapForUnit("player") or 0
-    local mapInfo = C_Map.GetMapInfo(mapID)
+    state.mapID = C_Map.GetBestMapForUnit("player") or 0
+    state.mapInfo = C_Map.GetMapInfo(state.mapID)
 end
 
 frame:RegisterEvent("PLAYER_TALENT_UPDATE")
@@ -1405,13 +1410,7 @@ function frame:UNIT_SPELLCAST_SUCCEEDED(unitTarget, castGUID, spellID, castBarID
             fu.ClearAllFuyutsuiBars()
             print("切换专精")
             C_Timer.After(1, function()
-                updatePlayerSpecInfo()
-            end)
-        end
-        if spellID == 55090 or spellID == 433895 then
-            updateLesserGhoul = true
-            C_Timer.After(0.3, function()
-                updateLesserGhoul = false
+                updateAllFunction()
             end)
         end
     end

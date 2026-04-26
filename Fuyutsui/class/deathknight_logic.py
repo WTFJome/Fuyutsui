@@ -175,7 +175,7 @@ def run_deathknight_logic(state_dict, spec_name):
                     current_step = "施放 亡者大军"
                     action_hotkey = get_hotkey(0, "亡者大军")
                     # 确保"黑暗突变"会等待"亡者大军"CD
-                elif 爆发 == 1 and 黑暗突变 == 0 and 亡者大军 > 40:
+                elif 黑暗突变 == 0 and 亡者大军 > 40:
                     current_step = "施放 黑暗突变"
                     action_hotkey = get_hotkey(0, "黑暗突变")
                     # 优先灵魂收割

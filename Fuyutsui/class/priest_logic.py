@@ -252,7 +252,7 @@ def _priest_discipline_logic(state_dict):
 
     elif 英雄天赋 == 2:
         if 战斗:
-            if 目标类型 and 一键辅助 == 14:
+            if 1 <= 目标类型 <= 3 and 一键辅助 == 14:
                 current_step = "施放 暗言术：痛"
                 action_hotkey = get_hotkey(0, "暗言术：痛")
             elif 1 <= 目标类型 <= 3 and 熵能裂隙 > 0 and 苦修 == 0:

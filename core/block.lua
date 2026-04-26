@@ -69,7 +69,7 @@ local BAR_CONFIG = {
 -- 创建"色条"的容器
 local countBars = CreateFrame("Frame", "FuyutsuiCountBars", UIParent)
 countBars:SetSize(screenWidth, 20)
-countBars:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -2)
+countBars:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -3)
 countBars:SetFrameStrata("TOOLTIP") -- 确保在最上层
 countBars:SetFrameLevel(1)
 local createdBars = {}
