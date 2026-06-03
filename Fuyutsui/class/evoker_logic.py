@@ -70,10 +70,10 @@ def run_evoker_logic(state_dict, spec_name):
         if 引导 > 0:
             current_step = "在引导,不执行任何操作"
         if 蓄力 > 0:
-            if 蓄力层数 == 1 and 施法技能 == 26:
+            if 蓄力层数 >= 1 and 一键辅助 == 2:
                 current_step = "施放 火焰吐息"
                 action_hotkey = get_hotkey(0, "火焰吐息")
-            elif 蓄力层数 == 1 and 施法技能 == 27:
+            elif 蓄力层数 >= 1 and 一键辅助 == 16:
                 current_step = "施放 永恒之涌"
                 action_hotkey = get_hotkey(0, "永恒之涌")
             else:

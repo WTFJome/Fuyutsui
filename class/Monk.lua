@@ -2,9 +2,9 @@ if UnitClassBase("player") ~= "MONK" then return end
 local addon, ns = ...
 Fuyutsui.ClassBlocks = {
     [1] = {
-        ["countBars"] = {
-            { valueType = "castCount", name = "疗伤珠", minValue = 0, maxValue = 10, spellId = 322101 },
-        },
+
+        ["countBars1"] = { type = "countBar", name = "疗伤珠", minValue = 0, maxValue = 10, spellId = 322101 },
+
         [1] = { type = "block", name = "锚点" },
         [2] = { type = "block", name = "职业" },
         [3] = { type = "block", name = "专精" },
@@ -60,10 +60,12 @@ Fuyutsui.ClassBlocks = {
 
     },
     [2] = {
+
         ["countBars"] = {
             { valueType = "castCount", name = "法力茶", minValue = 0, maxValue = 20, spellId = 115294 },
-            { valueType = "castCount", name = "神龙之赐", minValue = 0, maxValue = 10, spellId = 399491 },
+            { valueType = "castCount", name = "神龙之赐", minValue = 0, maxValue = 10, spellId = 399491 }
         },
+
         [1] = { type = "block", name = "锚点" },
         [2] = { type = "block", name = "职业" },
         [3] = { type = "block", name = "专精" },
@@ -88,30 +90,38 @@ Fuyutsui.ClassBlocks = {
         [21] = { type = "block", name = "敌人人数" },
         [22] = { type = "block", name = "施法技能" },
         [23] = { type = "block", name = "施法目标" },
+        [24] = { type = "block", name = "目标距离" },
 
         [25] = { type = "aura", name = "生生不息1", auraName = "生生不息1", showKey = "remaining" },
         [26] = { type = "aura", name = "生生不息2", auraName = "生生不息2", showKey = "remaining" },
         [28] = { type = "aura", name = "灵泉", auraName = "灵泉", showKey = "remaining" },
         [29] = { type = "aura", name = "玄牛之力", auraName = "玄牛之力", showKey = "remaining" },
         [30] = { type = "aura", name = "青龙之心", auraName = "青龙之心", showKey = "remaining" },
+        [31] = { type = "aura", name = "活力苏醒", auraName = "活力苏醒", showKey = "remaining" },
+        [32] = { type = "aura", name = "禅意波", auraName = "禅意波", showKey = "remaining" },
 
-        [31] = { type = "spell", spellId = 116680, name = "雷光聚神茶" },
-        [32] = { type = "spell", spellId = 116680, name = "雷光聚神茶", charge = true },
-        [33] = { type = "spell", spellId = 115151, name = "复苏之雾" },
-        [34] = { type = "spell", spellId = 115151, name = "复苏之雾", charge = true },
-        [35] = { type = "spell", spellId = 115310, name = "还魂术" },
-        [36] = { type = "spell", spellId = 116849, name = "作茧缚命" },
-        [37] = { type = "spell", spellId = 115450, name = "清创生血" },
-        [38] = { type = "spell", spellId = 443028, name = "天神御身" },
-        [39] = { type = "spell", spellId = 322109, name = "轮回之触" },
-        [40] = { type = "spell", spellId = 119381, name = "扫堂腿" },
-        [41] = { type = "spell", spellId = 1270621, name = "宁神茶" },
-        [42] = { type = "spell", spellId = 101643, name = "魂体双分" },
-        [43] = { type = "spell", spellId = 119996, name = "魂体双分：转移" },
-        [44] = { type = "spell", spellId = 107428, name = "旭日东升踢" },
-        [45] = { type = "spell", spellId = 100784, name = "幻灭踢" },
-        [46] = { type = "spell", spellId = 116844, name = "平心之环" },
-        [47] = { type = "spell", spellId = 115078, name = "分筋错骨" },
+
+
+        [35] = { type = "spell", spellId = 116680, name = "雷光聚神茶" },
+        [36] = { type = "spell", spellId = 116680, name = "雷光聚神茶", charge = true },
+        [37] = { type = "spell", spellId = 115151, name = "复苏之雾" },
+        [38] = { type = "spell", spellId = 115151, name = "复苏之雾", charge = true },
+        [39] = { type = "spell", spellId = 115310, name = "还魂术" },
+        [40] = { type = "spell", spellId = 116849, name = "作茧缚命" },
+        [41] = { type = "spell", spellId = 115450, name = "清创生血" },
+        [42] = { type = "spell", spellId = 443028, name = "天神御身" },
+        [43] = { type = "spell", spellId = 322109, name = "轮回之触" },
+        [44] = { type = "spell", spellId = 119381, name = "扫堂腿" },
+        [45] = { type = "spell", spellId = 1270621, name = "宁神茶" },
+        [46] = { type = "spell", spellId = 101643, name = "魂体双分" },
+        [47] = { type = "spell", spellId = 119996, name = "魂体双分：转移" },
+        [48] = { type = "spell", spellId = 107428, name = "旭日东升踢" },
+        [49] = { type = "spell", spellId = 100784, name = "幻灭踢" },
+        [50] = { type = "spell", spellId = 116844, name = "平心之环" },
+        [51] = { type = "spell", spellId = 115078, name = "分筋错骨" },
+        [52] = { type = "spell", spellId = 322118, name = "青龙下凡" },
+        [53] = { type = "spell", spellId = 325197, name = "朱鹤下凡" },
+        [54] = { type = "spell", spellId = 467307, name = "疾风呼啸踢" },
 
         [70] = {
             type = "group",
@@ -167,7 +177,7 @@ Fuyutsui.MacrosList = {
     specialSpells = {},
     staticSpells = {
         [1] = "扫堂腿",
-        [2] = "神鹤引项踢",
+        [2] = "!神鹤引项踢",
         [3] = "壮胆酒",
         [4] = "[known:116844,@cursor]平心之环;[known:198898]赤精之歌",
         [5] = "猛虎掌",
@@ -194,5 +204,8 @@ Fuyutsui.MacrosList = {
         [26] = "风领主之击",
         [27] = "怒雷破",
         [28] = "升龙霸",
+        [29] = "青龙下凡",
+        [30] = "朱鹤下凡",
+        [31] = "还魂术",
     },
 }

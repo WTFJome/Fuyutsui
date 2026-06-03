@@ -26,6 +26,16 @@ Fuyutsui.ClassBlocks = {
         [21] = { type = "block", name = "目标生命值" },
         [22] = { type = "block", name = "敌人人数" },
 
+        [23] = { type = "block", name = "爆发开关" },
+        [24] = { type = "block", name = "输出模式" },
+        [25] = { type = "block", name = "大红冷却"},
+
+        [26] = { type = "aura", name = "元素冲击精通", auraName = "元素冲击精通", showKey = "remaining" },
+        [27] = { type = "aura", name = "风暴守护者", auraName = "风暴守护者", showKey = "count" },
+        [28] = { type = "aura", name = "净化烈焰", auraName = "净化烈焰", showKey = "remaining" },
+        [29] = { type = "aura", name = "狂风怒号", auraName = "狂风怒号", showKey = "count" },
+        [30] = { type = "aura", name = "熔岩奔腾", auraName = "熔岩奔腾", showKey = "remaining" },
+        
         [31] = { type = "spell", spellId = 57994, name = "风剪" },
         [32] = { type = "spell", spellId = 198103, name = "土元素" },
         [33] = { type = "spell", spellId = 192058, name = "电能图腾" },
@@ -37,6 +47,17 @@ Fuyutsui.ClassBlocks = {
         [39] = { type = "spell", spellId = 383013, name = "清毒图腾" },
         [40] = { type = "spell", spellId = 192063, name = "阵风" },
         [41] = { type = "spell", spellId = 58875, name = "幽魂步" },
+        [42] = { type = "spell", spellId = 61882, name = "地震术" },
+        [43] = { type = "spell", spellId = 8042, name = "大地震击" }, 
+        [44] = { type = "spell", spellId = 470057, name = "流电炽焰" },
+        [45] = { type = "spell", spellId = 318038, name = "火舌武器" },
+        [46] = { type = "spell", spellId = 51505, name = "熔岩爆裂" },
+        [47] = { type = "spell", spellId = 191634, name = "风暴守护者" },
+        [48] = { type = "spell", spellId = 452201, name = "狂风怒号" },
+        [49] = { type = "spell", spellId = 114050, name = "升腾" },
+        [50] = { type = "spell", spellId = 77130, name = "净化灵魂" },
+        [51] = { type = "spell", spellId = 443454, name = "先祖迅捷" },
+        [52] = { type = "spell", spellId = 117014, name = "元素冲击" },
 
     },
     [2] = {
@@ -64,6 +85,11 @@ Fuyutsui.ClassBlocks = {
         [21] = { type = "block", name = "目标生命值" },
         [22] = { type = "block", name = "敌人人数" },
 
+        [23] = { type = "block", name = "爆发开关" },
+        [24] = { type = "block", name = "输出模式" },
+        [25] = { type = "block", name = "大红冷却"},
+
+        [30] = { type = "aura", name = "熔岩奔腾", auraName = "熔岩奔腾", showKey = "remaining" },
         [31] = { type = "spell", spellId = 57994, name = "风剪" },
         [32] = { type = "spell", spellId = 198103, name = "土元素" },
         [33] = { type = "spell", spellId = 192058, name = "电能图腾" },
@@ -75,6 +101,7 @@ Fuyutsui.ClassBlocks = {
         [39] = { type = "spell", spellId = 383013, name = "清毒图腾" },
         [40] = { type = "spell", spellId = 192063, name = "阵风" },
         [41] = { type = "spell", spellId = 58875, name = "幽魂步" },
+        [42] = { type = "spell", spellId = 114050, name = "升腾" },
 
     },
     [3] = {
@@ -144,6 +171,9 @@ Fuyutsui.ClassBlocks = {
         [53] = { type = "spell", spellId = 98008, name = "灵魂链接图腾" },
         [54] = { type = "spell", spellId = 114052, name = "升腾" },
         [55] = { type = "spell", spellId = 108280, name = "治疗之潮图腾" },
+        [58] = { type = "block", name = "大红冷却"},
+        [59] = { type = "block", name = "爆发开关"},
+        
         [70] = {
             type = "group",
             num = 6,
@@ -196,7 +226,7 @@ Fuyutsui.MacrosList = {
         [31] = "风暴打击",
         [32] = "狂风怒号",
         [33] = "元素冲击",
-        [34] = "地震术",
+        [34] = "[@cursor]地震术",
         [35] = "大地震击",
         [36] = "风暴守护者",
         [37] = "闪电之盾",

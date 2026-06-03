@@ -475,6 +475,15 @@ state:
   1:
     目标生命值: {step: 21, type: "int" }
     敌人人数: {step: 22, type: "int" }
+    爆发开关: {step: 23, type: "int" }
+    输出模式: {step: 24, type: "int" }
+    大红冷却: {step: 25, type: "int" }
+    元素冲击精通: {step: 26, type: "int" }
+    风暴守护者: {step: 27, type: "int" }
+    净化烈焰: {step: 28, type: "int" }
+    狂风怒号: {step: 29, type: "int" }
+    熔岩奔腾: {step: 30, type: "int" }
+    
     spells:
       风剪: {step: 31, type: "int" }
       土元素: {step: 32, type: "int" }
@@ -575,6 +584,8 @@ state:
       灵魂链接图腾: {step: 53, type: "int" }
       升腾: {step: 54, type: "int" }
       治疗之潮图腾: {step: 55, type: "int" }
+      大红冷却: {step: 58, type: "int" }
+      爆发开关: {step: 59, type: "int" }
     group:
       start: 70
       num: 6
@@ -729,6 +740,7 @@ state:
     敌人人数: {step: 21, type: "int" }
     施法技能: {step: 22, type: "int" }
     施法目标: {step: 23, type: "int" }
+    目标距离: {step: 24, type: "int" }
     法力茶层数: {step: bar, bar: 1, type: "int"}
     生生不息1: {step: 25, type: "int" }
     生生不息2: {step: 26, type: "int" }
@@ -736,25 +748,30 @@ state:
     灵泉: {step: 28, type: "int" }
     玄牛之力: {step: 29, type: "int" }
     青龙之心: {step: 30, type: "int" }
+    活力苏醒: {step: 31, type: "int" }
+    禅意波: {step: 32, type: "int" }
     
     spells:
-      雷光茶: {step: 31, type: "int" }
-      雷光充能: {step: 32, type: "int" }
-      复苏之雾: {step: 33, type: "int" }
-      复苏充能: {step: 34, type: "int" }
-      还魂术: {step: 35, type: "int" }
-      作茧缚命: {step: 36, type: "int" }
-      清创生血: {step: 37, type: "int" }
-      天神御身: {step: 38, type: "int" }
-      轮回之触: {step: 39, type: "int" }
-      扫堂腿: {step: 40, type: "int" }
-      宁神茶: {step: 41, type: "int" }
-      魂体双分: {step: 42, type: "int" }
-      魂体双分：转移: {step: 43, type: "int" }
-      旭日东升踢: {step: 44, type: "int" }
-      幻灭踢: {step: 45, type: "int" }
-      平心之环: {step: 46, type: "int" }
-      分筋错骨: {step: 47, type: "int" }
+      雷光茶: {step: 35, type: "int" }
+      雷光充能: {step: 36, type: "int" }
+      复苏之雾: {step: 37, type: "int" }
+      复苏充能: {step: 38, type: "int" }
+      还魂术: {step: 39, type: "int" }
+      作茧缚命: {step: 40, type: "int" }
+      清创生血: {step: 41, type: "int" }
+      天神御身: {step: 42, type: "int" }
+      轮回之触: {step: 43, type: "int" }
+      扫堂腿: {step: 44, type: "int" }
+      宁神茶: {step: 45, type: "int" }
+      魂体双分: {step: 46, type: "int" }
+      魂体双分：转移: {step: 47, type: "int" }
+      旭日东升踢: {step: 48, type: "int" }
+      幻灭踢: {step: 49, type: "int" }
+      平心之环: {step: 50, type: "int" }
+      分筋错骨: {step: 51, type: "int" }
+      青龙下凡: {step: 52, type: "int" }
+      朱鹤下凡: {step: 53, type: "int" }
+      疾风呼啸踢: {step: 54, type: "int" }
 
     group:
       start: 70

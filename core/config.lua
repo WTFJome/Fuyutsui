@@ -260,6 +260,7 @@ Fuyutsui.spellsList = {
     [200025]  = { index = 24, failed = true }, -- 美德道标
     [114165]  = { index = 25, },               -- 神圣棱镜
     [53595]   = { index = 26, },               -- 正义之锤
+    [4987]    = { index = 27, failed = true }, -- 清洁术
     -- 武僧
     [322109]  = { index = 1, failed = true },  -- 轮回之触
     [119381]  = { index = 2, failed = true },  -- 扫堂腿
@@ -292,6 +293,9 @@ Fuyutsui.spellsList = {
     [443028]  = { index = 29, },               -- 天神御身
     [124682]  = { index = 30, },               -- 氤氲之雾
     [115294]  = { index = 31, },               -- 法力茶
+    [322118]  = { index = 32, failed = true},  -- 青龙下凡
+    [325197]  = { index = 33, failed = true},  -- 朱鹤下凡
+    [115450]  = { index = 34, failed = true},  -- 清创生血
     -- 战士
     [202168]  = { index = 1, failed = true },  -- 胜利在望
     [376079]  = { index = 2, failed = true },  -- 勇士之矛
@@ -490,7 +494,7 @@ Fuyutsui.spellsList = {
     [8143]    = { index = 18, failed = true }, -- 战栗图腾
     [383013]  = { index = 19, failed = true }, -- 清毒图腾
     [108287]  = { index = 20, failed = true }, -- 图腾投射
-    [114052]  = { index = 21, failed = true }, -- 升腾
+    [114052]  = { index = 21, failed = true }, -- 升腾 (奶萨)
     [108280]  = { index = 22, failed = true }, -- 治疗之潮图腾
     [187874]  = { index = 23, },               -- 毁灭闪电
     [470057]  = { index = 24, },               -- 流电炽焰
@@ -511,7 +515,7 @@ Fuyutsui.spellsList = {
     [1064]    = { index = 39, },               -- 治疗链
     [61295]   = { index = 40, },               -- 激流
     [974]     = { index = 41, },               -- 大地之盾
-    [77130]   = { index = 42, },               -- 净化灵魂
+    [77130]   = { index = 42, failed = true }, -- 净化灵魂
     [73685]   = { index = 43, },               -- 生命释放
     [1267068] = { index = 44, },               -- 风暴涌流图腾
     [73920]   = { index = 45, failed = true }, -- 治疗之雨
@@ -523,6 +527,7 @@ Fuyutsui.spellsList = {
     [2645]    = { index = 51, },               -- 幽魂之狼
     [370]     = { index = 50, },               -- 净化术
     [378773]  = { index = 51, },               -- 强效净化术
+    [114050]  = { index = 52, },               -- 升腾 (元素)
     -- 唤魔师
     [365585]  = { index = 1, },                -- 净除
     [382266]  = { index = 2, },                -- 火焰吐息

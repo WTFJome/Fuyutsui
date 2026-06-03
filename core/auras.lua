@@ -636,6 +636,85 @@ local auras = {
             },
             removeAuras = nil,
         },
+        ["熔岩奔腾"] = {
+            name = "熔岩奔腾",
+            remaining = 0,
+            duration = 10,
+            expirationTime = nil,
+            addAuras = {
+                [77762] = { event = e["法术冷却"] },
+            },
+            updateAuras = nil,
+            removeAuras = {
+                [51505] = { event = e["施法成功"] }, -- 熔岩爆裂
+            },
+        },
+        ["狂风怒号"] = {
+            name = "狂风怒号",
+            remaining = 0,
+            duration = 30,
+            count = 0,
+            countMin = 0,
+            countMax = 2,
+            expirationTime = nil,
+            addAuras = {
+                [454015] = { event = e["法术冷却"], step = 1 },
+            },
+            updateAuras = {
+                [114050] = { event = e["施法成功"], step = 1 }, -- 升腾
+                [452201] = { event = e["施法成功"], step = -1 }, -- 狂风怒号
+            },
+            removeAuras = {
+                [188196] = {
+                    event = e["图标改变"],
+                    overrideSpellID = 452201
+                },
+            },
+        },
+        ["净化烈焰"] = {
+            name = "净化烈焰",
+            remaining = 0,
+            duration = 30,
+            expirationTime = nil,
+            addAuras = {
+                [1259491] = { event = e["法术冷却"] },
+            },
+            updateAuras = nil,
+            removeAuras = {
+                [51505] = { event = e["施法成功"] }, -- 熔岩爆裂
+            },
+        },
+        ["风暴守护者"] = {
+            name = "风暴守护者",
+            remaining = 0,
+            spellId = 191634,
+            duration = 15,
+            count = 0,
+            countMin = 0,
+            countMax = 3,
+            expirationTime = nil,
+            addAuras = {
+                [191634] = { event = e["施法成功"], step = 3 },
+            },
+            updateAuras = {
+                [188196] = { event = e["施法成功"], step = -1 }, -- 闪电箭
+                [188443] = { event = e["施法成功"], step = -1 }, -- 闪电链
+            },
+            removeAuras = nil,
+        },
+        ["元素冲击精通"] = {
+            name = "元素冲击精通",
+            remaining = 0,
+            duration = 10,
+            expirationTime = nil,
+            addAuras = {
+                [173184] = { event = e["法术冷却"] },
+            },
+            updateAuras = nil,
+            removeAuras = {
+                [117014] = { event = e["施法成功"] }, -- 元素冲击
+            },
+        },
     },
     -- 法师
     [8] = {
@@ -747,6 +826,19 @@ local auras = {
             updateAuras = nil,
             removeAuras = {
                 [116670] = { event = e["施法成功"] },
+                [399491] = { event = e["施法成功"] },
+            },
+        },
+        ["禅意波"] = {
+            remaining = 0,
+            duration = 20,
+            expirationTime = nil,
+            addAuras = {
+                [446334] = { event = e["法术冷却"] },
+            },
+            updateAuras = nil,
+            removeAuras = {
+                [116670] = { event = e["施法成功"] },
             },
         },
         ["清空地窖"] = {
@@ -812,7 +904,9 @@ local auras = {
                 [1260565] = { event = e["法术冷却"] },
             },
             updateAuras = nil,
-            removeAuras = nil,
+            removeAuras = {
+                [124682] = { event = e["施法成功"], },
+            },
         },
         ["玄牛之力"] = {
             remaining = 0,

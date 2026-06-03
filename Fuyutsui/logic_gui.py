@@ -112,7 +112,7 @@ run_demonhunter_logic = _load_logic_module("demonhunter_logic")
 run_evoker_logic = _load_logic_module("evoker_logic")
 
 TOGGLE_INTERVAL = 0.1
-LOGIC_INTERVAL = 0.2
+LOGIC_INTERVAL = 0.1
 GUI_UPDATE_MS = 200
 TOGGLE_DEBOUNCE_SEC = 0.12
 
@@ -432,7 +432,8 @@ def _run_priest_loop():
             time.sleep(TOGGLE_INTERVAL)
             continue
 
-        state_dict = sd
+        state_dict = dict(sd)
+        state_dict["_scan_ms"] = _scan_ms
         class_id = _class_id
         spec_name = _spec_name
         action_hotkey = None

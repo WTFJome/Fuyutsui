@@ -176,10 +176,10 @@
 176: {unit: 0, 技能: "风领主之击", 热键: "ALT-SHIFT-F6"}
 177: {unit: 0, 技能: "怒雷破", 热键: "ALT-SHIFT-F7"}
 178: {unit: 0, 技能: "升龙霸", 热键: "ALT-SHIFT-F8"}
-179: {unit: 0, 技能: "", 热键: "ALT-SHIFT-F9"}
-180: {unit: 0, 技能: "", 热键: "ALT-SHIFT-F10"}
-181: {unit: 0, 技能: "", 热键: "ALT-SHIFT-F11"}
-182: {unit: 0, 技能: "", 热键: "ALT-SHIFT-F12"}
+179: {unit: 0, 技能: "青龙下凡", 热键: "ALT-SHIFT-F9"}
+180: {unit: 0, 技能: "朱鹤下凡", 热键: "ALT-SHIFT-F10"}
+181: {unit: 0, 技能: "还魂术", 热键: "ALT-SHIFT-F11"}
+182: {unit: 0, 技能: "作茧缚命", 热键: "ALT-SHIFT-F12"}
 183: {unit: 0, 技能: "", 热键: "ALT-SHIFT-,"}
 184: {unit: 0, 技能: "", 热键: "ALT-SHIFT-."}
 185: {unit: 0, 技能: "", 热键: "ALT-SHIFT-/"}
